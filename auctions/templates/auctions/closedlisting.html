@@ -1,0 +1,37 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+
+    <br>
+    {% if message %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endif %}
+
+    <div class="jumbotron text-center">
+        <h2 class="card-title h2">Closed listings</h2>
+        <p class="lead">These are the closed listings and winners along with their final bid. </p>
+        <div class="row d-flex justify-content-center">
+            <div class="col-xl-7 pb-2">
+                {% if empty %}
+                    <br>
+                    <p>No Closed Listings yet.</p>
+                {% else %}
+                    {% for product in products %}
+                        <br>
+                        <div class="card card-cascade">
+                            <div class="card-body card-body-cascade text-center">
+                                <h4 class="card-title"><strong>{{product.title}}</strong></h4>
+                                {% if product.winner == request.user.username %}
+                                    <p class="font-weight-bold">Congratulations, {{product.winner}} on winning {{product.title}} <br></p>
+                                {% endif %}
+                                    <p class="lead">Seller: {{product.owner}} <br></p>
+                                    <p class="lead">Winner: {{product.winner}} <br></p>
+                                    <p class="lead">Sold for ${{product.winprice}}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

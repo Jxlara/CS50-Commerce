@@ -1,0 +1,78 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+    {% if message %}
+        <div class="alert alert-{{msg_type}}"> {{ message }}</div>
+    {% endif %}
+
+    <div class="jumbotron text-center" style="padding: 3% 10%;">
+        <br>
+        <h1>{{product.title}}</h1>
+        <br>
+        <img src="{{product.image_link}}" alt="indeximage" class="img-thumbnail" style="width: 40em;">
+        <p class="lead"><strong>Description : </strong> {{product.description}}</p>
+        <p class="lead"><strong>Category : </strong> {{product.category}}</p>
+        <p class="lead"><strong>Current Bid Price : </strong> {{product.starting_bid}}</p>
+        <p class="lead"><strong>Seller : </strong> {{product.seller}}</p>
+        <p class="lead"><strong>Created on : </strong> {{product.created_at}}</p>
+
+        {% if added %}
+            <a href="{% url 'add_to_watchlist' product.id %}" class="btn btn-danger btn-lg" name="remove">Remove from Watchlist</a>
+        {% else %}
+            <a href="{% url 'add_to_watchlist'  product.id %}" class="btn btn-success btn-lg" name="addto">Add to Watchlist</a>
+        {% endif %}
+        <br> 
+        {% if user.name != product.seller %}
+            <p class="lead"><strong> Place your bid : </strong></p>
+            <form action="{% url 'view_listing' product.id %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input class="form-control" type="text" name="newbid" placeholder="Your Bid" style="position: inherit; width: 10rem;">
+                </div>
+                <p align="justify"><input class="btn btn-primary" type="submit" value="Submit"></p>
+            </form>
+        {% endif %}
+
+        <br><br>
+        <div class="jumbotron text-center">
+            <h2 class="card-title h2">COMMENTS</h2>
+            <p class="lead my-4"> These are the comments left by other users.</p>
+
+            {% if comments %}
+
+                {% for comment in comments %}
+                    <br>
+                    <div class="card text-left">
+                        <h5 class="card-header h5">{{comment.user}}</h5>
+                            <div class="card-body">
+                                <p class="lead">{{comment.comment}}</p>
+                                <p class="card-text">{{comment.timestamp}}</p>
+                            </div>
+                        </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center">
+                    <br>
+                    <p class="lead">No Comments Yet</p>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if user.username != product.seller %}
+            <div class="jumbotron text-center">
+                <h2 class="card-title h2"> Add Comment</h2>
+
+                <form action="{% url 'add_comment' product.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <textarea class="form-control" name="comment" rows="4" placeholder="Your Comment"></textarea>
+                    </div>
+                    <p align="justify"><input class="btn btn-primary" type="submit" value="Submit"></p>
+                </form>
+            </div>
+        {% endif %}
+
+        {% if user.username == product.seller %}
+            <a href="{% url 'close_bid' product.id %}" class="btn btn-info btn-lg">Close Bid</a>
+        {% endif %}
+    </div>
+{% endblock %}

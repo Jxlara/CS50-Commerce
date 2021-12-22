@@ -1,0 +1,77 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div class="jumbotron text-center">
+        <h2 class="card-title h2">HOME</h2>
+        <p class="black-text my-4 font-weight-light">Here is you account information and your Watchlist.</p>
+
+        <div class="row d-flex justify-content-center">
+            <div class="col-xl-7 pb-2">
+                <div class="container mt-5">
+                    <section class="text-center dark-grey-text">
+                        <div class="wrapper-carousel-fix">
+                            <div id="carousel-example-1" class="carousel no-flex testimonial-carousel slide carousel-fade" data-ride="carousel" data-interval="false">
+                                <div class="carousel-inner" role="listbox">
+                                    <div class="carousel-item active">
+                                        <div class="testimonial">
+                                            <h4 class="font-weight-light">Hello,{{request.user.username}}!</h4>
+                                            <h6 class="font-weight-light my-3">{{request.user.email}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        
+        <hr class="my-4">
+        <br>
+        <h4 class="card-title">Your watchlist</h4>
+
+        {% if present %}
+            {% for item in product_list %}
+                <br>
+                <div class="card text-left">
+                    <a href="{% url 'view_listing' item.id %}"><h5 class="card-header h5">{{item.title}}</h5></a>
+                    <div class="card-body">
+                        <h5 class="card-title">Seller : {{item.seller}}</h5>
+                        <p class="lead">Price : {{item.starting_bid}}</p>
+                        <p class="card-text">{{item.created_at}}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center">
+                <br>
+                <p class="lead">No listings Found</p>
+            </div>
+        {% endif %}            
+    </div>
+    <!--Winner Section-->
+    <div class="jumbotron text-center">
+        <h2 class="card-title h2">Listings You won!</h2>
+        <div class="row d-flex justify-content-center">
+            <div class="col-xl-7 pb-2">
+                {% if not products %}
+                    <br>
+                    <p class="lead">You have not won any listings yet.</p>
+                {% else %}
+                    {% for product in products %}
+                        <br>
+                        <div class="card card-cascade">
+                            <div class="card-body card-body-cascade text-center">
+                                <h4 class="card-title"><strong>{{product.title}}</strong></h4>
+                                <p class="font-weight-bold">You won!! <br></p>
+                                <p class="font-weight-bold">Seller: {{product.owner}} <br></p>
+                                <p class="font-weight-bold">Winner: {{product.winner}} <br></p>
+                                <p class="font-weight-bold">{{product.winprice}}$ <br></p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
